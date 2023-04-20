@@ -3,10 +3,11 @@ name: KuberenetesDashboard
 type: primary
 urlHandle: 5fvfwi
 components:
-    - kind: KubernetesManifest
-      name: kubedashuser
-      runnerImage: "alpine/k8s:1.22.15"
-      deploy:
+    - 
+        kind: KubernetesManifest
+        name: kubedashuser
+        runnerImage: "alpine/k8s:1.22.15"
+        deploy:
           - |
               cat << EOF > admin-user.yaml
                   apiVersion: v1
@@ -35,14 +36,14 @@ components:
               - 'ADMIN_NAME=$(kubectl get secrets -n {{ env.k8s.namespace }} | grep admin-user | awk ''{print $1}'')'
               - 'AUTH_TOKEN=$(kubectl describe secret $ADMIN_NAME -n {{ env.k8s.namespace }} | grep ''token:'' | awk ''{print $2}'')'
               - 'echo $AUTH_TOKEN'
-      destroy:
+        destroy:
           - "kustomize create --autodetect --recursive --namespace {{ env.k8s.namespace }}"
           - "kubectl delete -k ."
-      start:
+        start:
           - 'echo "N/A"'
-      stop:
+        stop:
           - 'echo "N/A"'
-      exportVariables:
+        exportVariables:
           - AUTH_TOKEN
     - 
         kind: Helm
