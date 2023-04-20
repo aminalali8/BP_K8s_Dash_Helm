@@ -1,7 +1,6 @@
 kind: Environment
 name: KuberenetesDashboard
 type: primary
-urlHandle: 5fvfwi
 components:
     - 
         kind: KubernetesManifest
