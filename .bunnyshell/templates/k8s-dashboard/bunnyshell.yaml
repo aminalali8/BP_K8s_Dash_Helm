@@ -15,7 +15,7 @@ components:
                       name: admin-user
                       namespace: {{ env.k8s.namespace }}
               EOF
-              - |
+          - |
               cat << EOF > cluster-role-binding.yaml
                   apiVersion: rbac.authorization.k8s.io/v1
                   kind: ClusterRoleBinding
@@ -30,11 +30,11 @@ components:
                         name: admin-user
                         namespace: {{ env.k8s.namespace }}
               EOF
-              - 'kustomize create --autodetect --recursive --labels=app.kubernetes.io/instance-kubedashuser:bns,app.kubernetes.io/part-of:env-{{ env.unique }} --namespace {{ env.k8s.namespace }}'
-              - 'kubectl apply -k .'
-              - 'ADMIN_NAME=$(kubectl get secrets -n {{ env.k8s.namespace }} | grep admin-user | awk ''{print $1}'')'
-              - 'AUTH_TOKEN=$(kubectl describe secret $ADMIN_NAME -n {{ env.k8s.namespace }} | grep ''token:'' | awk ''{print $2}'')'
-              - 'echo $AUTH_TOKEN'
+          - 'kustomize create --autodetect --recursive --labels=app.kubernetes.io/instance-kubedashuser:bns,app.kubernetes.io/part-of:env-{{ env.unique }} --namespace {{ env.k8s.namespace }}'
+          - 'kubectl apply -k .'
+          - 'ADMIN_NAME=$(kubectl get secrets -n {{ env.k8s.namespace }} | grep admin-user | awk ''{print $1}'')'
+          - 'AUTH_TOKEN=$(kubectl describe secret $ADMIN_NAME -n {{ env.k8s.namespace }} | grep ''token:'' | awk ''{print $2}'')'
+          - 'echo $AUTH_TOKEN'
         destroy:
           - "kustomize create --autodetect --recursive --namespace {{ env.k8s.namespace }}"
           - "kubectl delete -k ."
@@ -99,8 +99,8 @@ components:
                     # If not set and create is true, a name is generated using the fullname template
                     name: admin
                 EOF
-                - 'helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/'
-                - 'helm upgrade --install --namespace {{ env.k8s.namespace }} --dependency-update --post-renderer /bns/helpers/helm/add_labels/kustomize -f my_values.yaml kubedash-{{ env.unique }} kubernetes-dashboard/kubernetes-dashboard'
+            - 'helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/'
+            - 'helm upgrade --install --namespace {{ env.k8s.namespace }} --dependency-update --post-renderer /bns/helpers/helm/add_labels/kustomize -f my_values.yaml kubedash-{{ env.unique }} kubernetes-dashboard/kubernetes-dashboard'
         destroy:
             - "helm uninstall kubedash-{{ env.unique }} --namespace {{ env.k8s.namespace }}"
         start:
